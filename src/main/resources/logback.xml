@@ -14,5 +14,6 @@
     </root>
 
     <logger name="io.micronaut.context.condition" level="DEBUG"/>
+    <logger name="org.hibernate.type.descriptor.sql" level="trace"/>
 
 </configuration>

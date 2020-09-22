@@ -1,6 +1,6 @@
 package com.xavier.microlib.repository
 
-import com.xavier.microlib.model.Admin
+import com.xavier.microlib.domain.Admin
 import io.micronaut.data.annotation.Repository
 import io.micronaut.data.repository.CrudRepository
 

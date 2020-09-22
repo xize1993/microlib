@@ -1,17 +1,5 @@
 version: '3'
 services:
-
-#  openjdk:
-#    image: openjdk:11-jdk-slim
-#    ports:
-#      - "8080:8080"
-#    volumes:
-#      - ./jar:/src
-#    working_dir: /src
-#    depends_on:
-#      - mysql
-#    command: java -jar mtmtodo-0.0.1-SNAPSHOT.jar
-
   mysql:
     image: mysql:5.7
     container_name: microlib-mysql

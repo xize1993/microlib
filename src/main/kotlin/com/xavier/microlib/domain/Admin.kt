@@ -1,4 +1,4 @@
-package com.xavier.microlib.model
+package com.xavier.microlib.domain
 
 import java.time.LocalDateTime
 import javax.persistence.*
@@ -10,16 +10,18 @@ import javax.persistence.*
  **/
 @Entity(name = "t_admin")
 data class Admin(
+
+        /** ID */
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Int?,
 
-        @Column(name = "account", nullable = false)
+        /** アカウント */
         var account: String,
 
-        @Column(name = "pwd", nullable = false)
+        /** パスワード */
         var pwd: String,
 
-        @Column(name = "last_login_time", nullable = true)
+        /** 最後ログイン時間 */
         val lastLoginTime: LocalDateTime
 )

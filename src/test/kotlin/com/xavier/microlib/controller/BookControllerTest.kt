@@ -1,55 +1,136 @@
 package com.xavier.microlib.controller
 
-import com.xavier.microlib.model.Book
-import io.micronaut.context.ApplicationContext
+import com.xavier.microlib.domain.dto.BookDto
+import com.xavier.microlib.domain.option.BookSaveAndUpdateRequest
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.RxHttpClient
-import io.micronaut.runtime.server.EmbeddedServer
+import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.annotation.MicronautTest
-import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Order
+import org.junit.jupiter.api.Test
+import java.math.BigDecimal
+import java.net.URLEncoder
 import java.time.LocalDate
-
+import javax.inject.Inject
 
 @MicronautTest
 class BookControllerTest() {
 
-    val contextPath = "/microlib"
+    @Inject
+    @field:Client("/microlib")
     lateinit var client: RxHttpClient
 
-    var embeddedServer = ApplicationContext.run(EmbeddedServer::class.java)
-
-    @BeforeEach
-    fun init() {
-        client = embeddedServer.applicationContext.createBean(RxHttpClient::class.java, embeddedServer.url)
-    }
-
-    @AfterEach
-    fun tearDown() {
-        client.close()
-    }
-
+    /**
+     * 書籍：CRUDテスト
+     */
     @Test
-    fun testGetBook() {
-        val response = client.toBlocking().exchange("${contextPath}/book/1", Book::class.java)
+    @Order(1)
+    fun testBookCRUD() {
+        /*
+            1、書籍を作成
+         */
+        val bookSaveRequest = BookSaveAndUpdateRequest(null, "テストユニット", "1234567890123", 1, "IT", LocalDate.now().plusDays(5),
+                null, BigDecimal(1800), "テストユニットより作成", 200)
+        val response = client.toBlocking().exchange(HttpRequest.POST("/book", bookSaveRequest), BookDto::class.java)
+
+        // レスポンスコード：200
         assertEquals(HttpStatus.OK, response.status)
-        assertEquals(1, response.body.get().id)
+
+        // レスポンスバーディー：BookDto
+        assertNotNull(response.body.get().id)
+        assertEquals("テストユニット", response.body.get().title)
+
+        // 発行されたbookIdを記録
+        val newBookId = response.body.get().id
+
+        /*
+            2、書籍を取得
+         */
+        val response2 = client.toBlocking().exchange("/book/${newBookId}", BookDto::class.java)
+
+        // レスポンスコード：200
+        assertEquals(HttpStatus.OK, response2.status)
+
+        // レスポンスバーディー：BookDto
+        assertEquals(newBookId, response2.body.get().id)
+
+        /*
+            3、書籍を更新
+         */
+        val bookUpdateRequest = BookSaveAndUpdateRequest(newBookId, "テストユニット更新", "1234567890123", 1, "IT", LocalDate.now().plusDays(5),
+                null, BigDecimal(1800), "テストユニットより更新", 200)
+        val response3 = client.toBlocking().exchange(HttpRequest.PATCH("/book", bookUpdateRequest), BookDto::class.java)
+
+        // レスポンスコード：200
+        assertEquals(HttpStatus.OK, response3.status)
+
+        // レスポンスバーディー：BookDto
+        assertEquals("テストユニット更新", response3.body.get().title)
+
+        /*
+            4、書籍を削除
+         */
+        val response4 = client.toBlocking().exchange(HttpRequest.DELETE("/book/${newBookId}", null), String::class.java)
+
+        // レスポンスコード：200
+        assertEquals(HttpStatus.OK, response4.status)
+
+        // レスポンスバーディー：削除成功のメッセージ
+        assertEquals("書籍が削除されました。", response4.body.get())
+
+//        // 再取得テスト TODO
+//        val response2 = client.toBlocking().exchange("/book/${newBookId}", Book::class.java)
+//
+//        // レスポンスコード：404
+//        assertEquals(HttpStatus.NOT_FOUND, response2.status)
     }
 
+    /**
+     * 書籍一覧検索:検察パラメータなし
+     */
     @Test
-    fun testGetBooks() {
-        val response = client.toBlocking().exchange("${contextPath}/book", String::class.java)
+    @Order(2)
+    fun testGetBooks () {
+        val response = client.toBlocking().exchange("/book?i=0&s=20", List::class.java)
+
+        // レスポンスコード：200
         assertEquals(HttpStatus.OK, response.status)
+
+        // レスポンスバーディー：List
+        assertTrue(response.body.get().isNotEmpty())
     }
 
+    /**
+     * 書籍一覧検索:タイトルで検索
+     */
     @Test
-    fun testSaveBook() {
-        var book = Book(null, "テストユニット", "1234567890123", 1, LocalDate.now().plusDays(5),
-                "テストユニットより作成", 100, true, 1, null, 1, null)
-        val response = client.toBlocking().exchange(HttpRequest.POST("${contextPath}/book", book), Int::class.java)
+    @Order(3)
+    fun testGetBooksByTitle () {
+        val p = URLEncoder.encode("テストユニット", "utf-8")
+        val response = client.toBlocking().exchange("/book?t=${p}&i=0&s=10", List::class.java)
+
+        // レスポンスコード：200
         assertEquals(HttpStatus.OK, response.status)
-        print(book)
+
+        // レスポンスバーディー：List
+        assertTrue(response.body.get().isNotEmpty())
+    }
+
+    /**
+     * 書籍一覧検索:著者で検索
+     */
+    @Test
+    @Order(4)
+    fun testGetBooksByAuthorId () {
+        val response = client.toBlocking().exchange("/book?a=1&i=0&s=10", List::class.java)
+
+        // レスポンスコード：200
+        assertEquals(HttpStatus.OK, response.status)
+
+        // レスポンスバーディー：List
+        assertTrue(response.body.get().isNotEmpty())
     }
 
 }

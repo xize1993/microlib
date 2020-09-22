@@ -8,7 +8,7 @@ micronaut:
 # DB接続の設定
 datasources:
   default:
-    url: jdbc:mysql://localhost:3306/microlib?characterEncoding=utf8&useSSL=true
+    url: jdbc:mysql://localhost:3306/microlib?characterEncoding=utf8&useSSL=true&serverTimezone=JST
     #      url: jdbc:mysql://mysql:3306/mtmtodo?characterEncoding=utf8&useSSL=true
     username: dev1
     password: microlib123
@@ -18,7 +18,7 @@ datasources:
 jpa:
   default:
     packages-to-scan:
-      - 'com.xavier.microlib.model'
+      - 'com.xavier.microlib.domain'
     properties:
       hibernate:
         bytecode:
@@ -26,3 +26,4 @@ jpa:
         hbm2ddl:
           auto: update
         show_sql: true
+        format_sql: true

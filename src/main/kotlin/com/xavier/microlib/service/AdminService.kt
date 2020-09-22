@@ -1,6 +1,6 @@
 package com.xavier.microlib.service
 
-import com.xavier.microlib.model.Admin
+import com.xavier.microlib.domain.Admin
 import com.xavier.microlib.repository.AdminRepository
 import java.time.LocalDateTime
 import javax.inject.Inject
