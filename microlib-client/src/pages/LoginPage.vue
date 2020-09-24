@@ -8,7 +8,6 @@ export default {
   data: () => ({
   }),
   components: {
-    // BookCard
   }
 };
 </script>

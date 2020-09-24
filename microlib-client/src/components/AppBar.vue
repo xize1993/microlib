@@ -4,23 +4,12 @@
       <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
         <span class="hidden-sm-and-down toobar-title" >Microlib 書籍管理システム</span>
       </v-toolbar-title>
-      <v-text-field
-        flat
-        solo-inverted
-        hide-details
-        prepend-inner-icon="mdi-magnify"
-        label="Search"
-        class="hidden-sm-and-down"
-      ></v-text-field>
       <v-spacer></v-spacer>
     </v-app-bar>
 </template>
 
 <script>
   export default {
-    // props: {
-    //   drawer: false
-    // },
     data: () => ({
       drawer: true,
     }),
@@ -30,7 +19,6 @@
         this.$emit('drawer', this.drawer)
       }
     }
-
   }
 </script>
 

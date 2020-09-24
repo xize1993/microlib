@@ -1,37 +1,55 @@
 <template>
   <v-card>
-    <v-card-title class="grey darken-2">著者</v-card-title>
+    <v-card-title class="red darken-2">著者登録</v-card-title>
     <v-container>
       <v-row class="mx-2">
-        <v-col class="align-center justify-space-between" cols="12">
-          <v-row align="center" class="mr-0">
-            <v-avatar size="40px" class="mx-3">
-              <img src="//ssl.gstatic.com/s2/oz/images/sge/grey_silhouette.png" alt />
-            </v-avatar>
-            <v-text-field placeholder="Name"></v-text-field>
-          </v-row>
+        <v-col cols="6">
+          <v-text-field prepend-icon="mdi-account-circle" placeholder="名前"></v-text-field>
+        </v-col>
+        <v-col cols="6">
+          <v-text-field prepend-icon="mdi-account-circle-outline" placeholder="名前（フリカナ）"></v-text-field>
+        </v-col>
+        <v-col cols="12">
+          <v-menu
+            ref="menu"
+            v-model="menu"
+            :close-on-content-click="false"
+            :return-value.sync="date"
+            transition="scale-transition"
+            offset-y
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="date"
+                label="出生日を選択する"
+                prepend-icon="mdi-calendar-month"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker v-model="date" no-title scrollable>
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="menu = false">キャンセル</v-btn>
+              <v-btn text color="primary" @click="$refs.menu.save(date)">選択</v-btn>
+            </v-date-picker>
+          </v-menu>
+        </v-col>
+        <v-col cols="12">
+          <v-textarea label="著者紹介" rows="1" prepend-icon="mdi-comment"></v-textarea>
         </v-col>
       </v-row>
     </v-container>
     <v-card-actions>
-      <v-btn text color="primary">More</v-btn>
       <v-spacer></v-spacer>
-      <v-btn text color="primary" @click="dialog = false">Cancel</v-btn>
-      <v-btn text @click="dialog = false">Save</v-btn>
+      <v-btn text @click="dialog = false">Cancel</v-btn>
+      <v-btn text color="primary" @click="dialog = false">Save</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
 export default {
-  props: {
-
-  },
-  data: () => ({
-
-  }),
-  methods: {
-    
-  }
 };
 </script>

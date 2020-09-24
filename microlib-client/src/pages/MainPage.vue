@@ -107,3 +107,9 @@ export default {
     }
 };
 </script>
+
+<style lang="scss">
+.lib-breadcrumb {
+  padding: 0;
+}
+</style>
