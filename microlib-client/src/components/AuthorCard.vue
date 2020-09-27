@@ -1,24 +1,24 @@
 <template>
   <v-card class="mx-auto" max-width="360" height="230" outlined>
-    <v-card-title class="subtitle-1">著者 太郎</v-card-title>
+    <v-card-title class="subtitle-1">{{author.authorName}}</v-card-title>
     <v-list-item>
       <v-list-item-content>
         <v-list-item-subtitle>
-          <div>カナ: チョシャ タロウ</div>
-          <div>出生日: 1964/-/-</div>
-          <div>書籍数: 5</div>
-          <p>仮の著者です。仮の著者です。仮の著者です。仮の著者です。仮の著者です。仮の著者です。仮の著者です。仮の著者です。仮の著者です。仮の著者です。仮の著者です。仮の著者です。</p>
+          <div>カナ: {{author.authorNameKana}}</div>
+          <div>出生日: {{author.birthday}}</div>
+          <div>書籍数: </div>
+          <p>{{author.description}}</p>
         </v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
 
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn text color="error">
+      <v-btn text color="error" @click="deleteSelf()">
         <v-icon small >mdi-delete</v-icon>
         <div><strong class="text--lighten-1">削除</strong></div>
       </v-btn>
-      <v-btn text>
+      <v-btn text @click="openAuthorDetails()">
         <v-icon small>mdi-pencil</v-icon>詳細
       </v-btn>
     </v-card-actions>
@@ -27,6 +27,20 @@
 
 <script>
   export default {
+    name: 'AuthorCard',
+    props: {
+      author: Object
+    },
+    methods: {
+       // 詳細ボタンを押下する
+      openAuthorDetails() {
+        this.$emit('openAuthorDetails', this.author);
+      },
+      // 削除ボタンを押下する
+      deleteSelf() {
+        this.$emit('deleteAuthor', this.author);
+      },
+    }
   }
 </script>
 

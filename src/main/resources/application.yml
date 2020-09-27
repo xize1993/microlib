@@ -36,4 +36,4 @@ jpa:
 microlib:
   book:
     cover:
-      directory: /dev-temp/microlib/image
+      directory: /Users/xavier/dev-temp/microlib/image

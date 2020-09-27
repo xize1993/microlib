@@ -76,8 +76,7 @@
               v-model="bookForm.publicationDate"
               :allowed-dates="allowedDates"
               no-title
-              scrollable
-            >
+              scrollable>
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="datePickerMenu = false">キャンセル</v-btn>
               <v-btn text color="primary" @click="$refs.datePickerMenu.save(bookForm.publicationDate)">選択</v-btn>
@@ -207,7 +206,7 @@ export default {
         formData.append('description', this.bookForm.description);
 
       if (this.bookForm.id) {
-        // 書籍新規作成リクエスト
+        // 書籍更新リクエスト
         formData.append('id', this.bookForm.id);
         this.$request({
           url: '/microlib/book',
@@ -227,7 +226,7 @@ export default {
           this.$emit('putMessage', e.response.data, 'error');
         });
       } else {
-        // 書籍更新リクエスト
+        // 書籍新規作成リクエスト
         this.$request({
           url: '/microlib/book',
           method: 'post',

@@ -119,7 +119,7 @@ export default {
     },
     // 現在のビューの一覧を更新する
     refreshCurrentViewList() {
-      this.$refs.currentView.getBookList();
+      this.$refs.currentView.getList();
     },
   }
 };

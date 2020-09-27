@@ -29,7 +29,7 @@
               </v-autocomplete>
             </v-col>
             <v-col cols="2" fill-height>
-              <v-btn class="ma-2" outlined color="teal" @click="getBookList()">検索</v-btn>
+              <v-btn class="ma-2" outlined color="teal" @click="getList()">検索</v-btn>
             </v-col>
           </v-row>
         </v-col>
@@ -53,14 +53,14 @@
         v-model="searchParams.pageIndex"
         :length="totalPages"
         :total-visible="10"
-        @input="getBookList()"
+        @input="getList()"
       ></v-pagination>
     </div>
 
     <!-- 削除ダイアログ -->
-    <v-dialog v-model="deleteDialogControl" max-width="290">
+    <v-dialog v-model="deleteDialogControl" max-width="350">
       <v-card>
-        <v-card-title class="headline">書籍を削除しますか？</v-card-title>
+        <v-card-title class="headline">この書籍を削除しますか？</v-card-title>
         <v-card-text>
           タイトル：{{deleteBookObj.title}}
           <br />著者：{{deleteBookObj.authorName}}
@@ -110,7 +110,7 @@ export default {
   },
   activated() {
     // 画面データを初期化する
-    this.getBookList()
+    this.getList()
     // 著者リスト
     this.authorsLoading = true
     this.$request({
@@ -129,7 +129,7 @@ export default {
   },
   methods: {
     // 書籍リストを取得
-    getBookList() {
+    getList() {
       this.$request({
         url: '/microlib/book',
         method: 'get',
@@ -174,7 +174,7 @@ export default {
       .then(() => {
         this.deleteDialogControl = false
         this.$emit('putMessage', '書籍を削除しました。', 'success');
-        this.getBookList();
+        this.getList();
       })
       .catch(e => {
         this.$emit('putMessage', e.response.data, 'error');
