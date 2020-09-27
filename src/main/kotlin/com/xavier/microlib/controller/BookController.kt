@@ -57,7 +57,7 @@ class BookController(val bookService: BookService) {
 //    }
     @Status(HttpStatus.CREATED)
     @Post(uri = "/", consumes = [MediaType.MULTIPART_FORM_DATA])
-    fun saveBook(@Body bookRequest: BookRequest, @Body imgFile: CompletedFileUpload?): BookResponse {
+    fun saveBook(@Valid @Body bookRequest: BookRequest, @Body imgFile: CompletedFileUpload?): BookResponse {
         return bookService.save(bookRequest, imgFile)
     }
 

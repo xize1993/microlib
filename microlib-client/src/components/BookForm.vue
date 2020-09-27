@@ -1,31 +1,31 @@
 <template>
   <v-card>
-    <v-card-title :class="formObj.id ? 'green' : 'blue'">書籍{{formObj.id ? '更新' : '登録'}}</v-card-title>
+    <v-card-title :class="bookForm.id ? 'green' : 'blue'">書籍{{bookForm.id ? '更新' : '登録'}}</v-card-title>
     <v-container>
       <v-row class="mx-2">
         <v-col cols="12">
           <v-text-field
-            v-model="formObj.title"
+            v-model="bookForm.title"
             prepend-icon="mdi-format-title"
             label="タイトル"
             maxlength="100"
-            counter="“100”"
+            counter="100"
           ></v-text-field>
         </v-col>
 
         <v-col cols="6">
           <v-file-input
-            v-model="formObj.imgFile"
+            v-model="bookForm.imgFile"
             accept="image/png, image/jpeg, image/bmp"
             prepend-icon="mdi-camera"
-            :placeholder="formObj.id ? '表紙を更新する' : ''"
+            :placeholder="bookForm.id ? '表紙を更新する' : ''"
             label="表紙"
           ></v-file-input>
         </v-col>
-
+        
         <v-col cols="6">
           <v-autocomplete
-            v-model="formObj.authorId"
+            v-model="bookForm.authorId"
             label="著者"
             persistent-hint
             :loading="authorsLoading"
@@ -34,17 +34,16 @@
             item-text="authorName"
             item-value="id"
             prepend-icon="mdi-account-box"
-          >
-          </v-autocomplete>
+          ></v-autocomplete>
         </v-col>
 
         <v-col cols="6">
-          <v-text-field v-model="formObj.isbn" prepend-icon="mdi-library" label="ISBN"></v-text-field>
+          <v-text-field v-model="bookForm.isbn" prepend-icon="mdi-library" label="ISBN"></v-text-field>
         </v-col>
 
         <v-col cols="6">
           <v-select
-            v-model="formObj.subject"
+            v-model="bookForm.subject"
             :items="subjectItems"
             menu-props="auto"
             label="種別"
@@ -56,8 +55,8 @@
 
         <v-col cols="12">
           <v-menu
-            ref="menu"
-            v-model="menu"
+            ref="datePickerMenu"
+            v-model="datePickerMenu"
             :close-on-content-click="false"
             transition="scale-transition"
             offset-y
@@ -65,7 +64,7 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                v-model="formObj.publicationDate"
+                v-model="bookForm.publicationDate"
                 label="出版日"
                 prepend-icon="mdi-calendar-month"
                 readonly
@@ -74,21 +73,21 @@
               ></v-text-field>
             </template>
             <v-date-picker
-              v-model="formObj.publicationDate"
+              v-model="bookForm.publicationDate"
               :allowed-dates="allowedDates"
               no-title
               scrollable
             >
               <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="menu = false">キャンセル</v-btn>
-              <v-btn text color="primary" @click="$refs.menu.save(formObj.publicationDate)">選択</v-btn>
+              <v-btn text color="primary" @click="datePickerMenu = false">キャンセル</v-btn>
+              <v-btn text color="primary" @click="$refs.datePickerMenu.save(bookForm.publicationDate)">選択</v-btn>
             </v-date-picker>
           </v-menu>
         </v-col>
 
         <v-col cols="6">
           <v-text-field
-            v-model="formObj.price"
+            v-model="bookForm.price"
             prepend-icon="mdi-currency-jpy"
             label="価格"
             type="number"
@@ -97,7 +96,7 @@
 
         <v-col cols="6">
           <v-text-field
-            v-model="formObj.pageCount"
+            v-model="bookForm.pageCount"
             prepend-icon="mdi-counter"
             label="ページ数"
             type="number"
@@ -107,7 +106,7 @@
 
         <v-col cols="12">
           <v-textarea
-            v-model="formObj.description"
+            v-model="bookForm.description"
             label="内容紹介"
             rows="1"
             prepend-icon="mdi-comment"
@@ -129,19 +128,20 @@ import constants from '../common/constants.js';
 export default {
   name: 'BookForm',
   props: {
-    dialogFormObj: Object
+    formObj: Object
   },
   data: () => ({
     subjectItems: constants.subjectItems,
-    menu: false,
+    datePickerMenu: false,
     authors: [],
     authorsLoading: false,
     authorsList: null
   }),
   computed: {
-    formObj() {
-      if (this.dialogFormObj) {
-        return this.dialogFormObj;
+    bookForm() {
+      console.log(this.formObj)
+      if (this.formObj) {
+        return this.formObj;
       } else {
         return {
           id: '',
@@ -162,16 +162,19 @@ export default {
     console.log('activated')
     // 画面データを初期化する
     this.authorsLoading = true
-    this.axios.get(`http://localhost:8081/microlib/author`)
-      .then(response => {
-        this.authors = response.data.content ? response.data.content : [];
-        this.authorsLoading = false
-      })
-      .catch(e => {
-        console.log(e);
-        this.authorsLoading = false
-        this.$emit('showMessage', '著者データ取得に失敗しました！', 'error');
-      })
+    this.$request({
+      url: '/microlib/author',
+      method: 'get'
+    })
+    .then(response => {
+      this.authors = response.data.content ? response.data.content : [];
+      this.authorsLoading = false
+    })
+    .catch(e => {
+      console.log(e);
+      this.authorsLoading = false
+      this.$emit('putMessage', '著者データ取得に失敗しました！', 'error');
+    })
   },
   methods: {
     // 出版日は過去日付の選択を禁止する
@@ -184,54 +187,63 @@ export default {
     saveBook() {
       // リクエストパラーメータを作成
       let formData = new FormData();
-      if (this.formObj.imgFile)
-        formData.append('imgFile', this.formObj.imgFile);
-      if (this.formObj.title) formData.append('title', this.formObj.title);
-      if (this.formObj.authorId)
-        formData.append('authorId', this.formObj.authorId);
-      if (this.formObj.isbn) formData.append('isbn', this.formObj.isbn);
-      if (this.formObj.subject)
-        formData.append('subject', this.formObj.subject);
-      if (this.formObj.publicationDate)
-        formData.append('publicationDate', this.formObj.publicationDate);
-      if (this.formObj.price) formData.append('price', this.formObj.price);
-      if (this.formObj.pageCount)
-        formData.append('pageCount', this.formObj.pageCount);
-      if (this.formObj.description)
-        formData.append('description', this.formObj.description);
+      if (this.bookForm.imgFile)
+        formData.append('imgFile', this.bookForm.imgFile);
+      if (this.bookForm.title) 
+        formData.append('title', this.bookForm.title);
+      if (this.bookForm.authorId)
+        formData.append('authorId', this.bookForm.authorId);
+      if (this.bookForm.isbn) 
+        formData.append('isbn', this.bookForm.isbn);
+      if (this.bookForm.subject)
+        formData.append('subject', this.bookForm.subject);
+      if (this.bookForm.publicationDate)
+        formData.append('publicationDate', this.bookForm.publicationDate);
+      if (this.bookForm.price) 
+        formData.append('price', this.bookForm.price);
+      if (this.bookForm.pageCount)
+        formData.append('pageCount', this.bookForm.pageCount);
+      if (this.bookForm.description)
+        formData.append('description', this.bookForm.description);
 
-      if (this.formObj.id) {
-        formData.append('id', this.formObj.id);
-        this.axios
-          .patch('http://localhost:8081/microlib/book', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          })
-          .then(() => {
-            // 成功の場合ダイアログをクローズ
-            this.$emit('closeDialog');
-            this.$emit('showMessage', '書籍を更新しました！', 'success');
-            this.$emit('refreshViewList');
-          })
-          .catch(e => {
-            this.$emit('showMessage', e.response.data, 'error');
-          });
+      if (this.bookForm.id) {
+        // 書籍新規作成リクエスト
+        formData.append('id', this.bookForm.id);
+        this.$request({
+          url: '/microlib/book',
+          method: 'patch',
+          data: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then(() => {
+          // 成功の場合ダイアログをクローズ
+          this.$emit('closeDialog');
+          this.$emit('putMessage', '書籍を更新しました！', 'success');
+          this.$emit('refreshViewList');
+        })
+        .catch(e => {
+          this.$emit('putMessage', e.response.data, 'error');
+        });
       } else {
-        this.axios
-          .post('http://localhost:8081/microlib/book', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          })
-          .then(() => {
-            this.$emit('closeDialog');
-            this.$emit('showMessage', '書籍を登録しました！', 'success');
-            this.$emit('refreshViewList');
-          })
-          .catch(e => {
-            this.$emit('showMessage', e.response.data, 'error');
-          });
+        // 書籍更新リクエスト
+        this.$request({
+          url: '/microlib/book',
+          method: 'post',
+          data: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then(() => {
+          this.$emit('closeDialog');
+          this.$emit('putMessage', '書籍を登録しました！', 'success');
+          this.$emit('refreshViewList');
+        })
+        .catch(e => {
+          this.$emit('putMessage', e.response.data, 'error');
+        });
       }
     }
   },
@@ -240,15 +252,16 @@ export default {
       // データすでに取得済みあるいはローディング中
       if (this.authors.length > 0 || this.authorsLoading) return;
       this.authorsLoading = true
+      
       // 著者一覧APIを呼び出す
-      fetch(`http://localhost:8081/microlib/author?n=${val}`)
+      fetch(this.$request.adornUrl(`/microlib/author?n=${val}`))
         .then(res => res.json())
         .then(res => {
           this.authors = res.content ? res.content : [];
         })
         .catch(e => {
           console.log(e);
-          this.$emit('showMessage', '著者データ取得に失敗しました！', 'error');
+          this.$emit('putMessage', '著者データ取得に失敗しました！', 'error');
         })
         .finally(() => (this.authorsLoading = false));
     }

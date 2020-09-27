@@ -14,7 +14,6 @@
               <v-text-field v-model="searchParams.title" label="タイトルで検索"></v-text-field>
             </v-col>
             <v-col cols="4">
-              <!-- <v-text-field v-model="searchParams.title" label="著者で検索"></v-text-field> -->
               <v-autocomplete
                 v-model="searchParams.authorId"
                 label="著者"
@@ -59,16 +58,16 @@
     </div>
 
     <!-- 削除ダイアログ -->
-    <v-dialog v-model="deleteDialog" max-width="290">
+    <v-dialog v-model="deleteDialogControl" max-width="290">
       <v-card>
         <v-card-title class="headline">書籍を削除しますか？</v-card-title>
         <v-card-text>
-          タイトル：未定
-          <br />著者：著者太郎
+          タイトル：{{deleteBookObj.title}}
+          <br />著者：{{deleteBookObj.authorName}}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn text @click="deleteDialog = false">キャンセル</v-btn>
+          <v-btn text @click="deleteDialogControl = false">キャンセル</v-btn>
           <v-btn color="red" text @click="deleteBook()">削除</v-btn>
         </v-card-actions>
       </v-card>
@@ -103,7 +102,7 @@ export default {
     authorsList: null,
     listBook: [],
     totalPages: 0,
-    deleteDialog: false,
+    deleteDialogControl: false,
     deleteBookObj: {}
   }),
   components: {
@@ -114,66 +113,72 @@ export default {
     this.getBookList()
     // 著者リスト
     this.authorsLoading = true
-    this.axios.get(`http://localhost:8081/microlib/author`)
-      .then(response => {
-        this.authors = response.data.content ? response.data.content : [];
-        this.authorsLoading = false
-      })
-      .catch(e => {
-        console.log(e);
-        this.authorsLoading = false
-        this.$emit('showMessage', '著者データ取得に失敗しました！', 'error');
-      })
+    this.$request({
+      url: '/microlib/author',
+      method: 'get'
+    })
+    .then(response => {
+      this.authors = response.data.content ? response.data.content : [];
+      this.authorsLoading = false
+    })
+    .catch(e => {
+      console.log(e);
+      this.authorsLoading = false
+      this.$emit('putMessage', '著者データ取得に失敗しました！', 'error');
+    })
   },
   methods: {
     // 書籍リストを取得
     getBookList() {
-      this.axios
-        .get(`http://localhost:8081/microlib/book`, {
-          params: {
+      this.$request({
+        url: '/microlib/book',
+        method: 'get',
+        params: {
             t: this.searchParams.title,
             a: this.searchParams.authorId,
             i: this.searchParams.pageIndex - 1,
             s: this.searchParams.pageSize
           }
-        })
-        .then(response => {
-          this.listBook = response.data.content;
-          this.totalPages = response.data.totalPages;
-        })
-        .catch(e => {
-          this.$emit('showMessage', e, 'error');
-        });
+      })
+      .then(response => {
+        this.listBook = response.data.content;
+        this.totalPages = response.data.totalPages;
+      })
+      .catch(e => {
+        this.$emit('putMessage', e, 'error');
+      });
     },
     // 書籍を詳細ダイアログを開く
     openBookDetails(book) {
       if (book && book.id) {
         this.$emit('openDialog', book);
       } else {
-        this.$emit('showMessage', 'パラーメータ不正', 'error');
+        this.$emit('putMessage', 'パラーメータ不正', 'error');
       }
     },
     // 削除ダイアログを開く
     openDeleteDialog(book) {
       if (book && book.id) {
         this.deleteBookObj = book
-        this.deleteDialog = true
+        this.deleteDialogControl = true
       } else {
-        this.$emit('showMessage', 'パラーメータ不正', 'error');
+        this.$emit('putMessage', 'パラーメータ不正', 'error');
       }
     },
     // 書籍を削除
     deleteBook() {
-      this.axios
-        .delete(`http://localhost:8081/microlib/book/${this.deleteBookObj.id}`)
-        .then(() => {
-          this.deleteDialog = false
-          this.$emit('showMessage', '書籍を削除しました。', 'success');
-          this.getBookList();
-        })
-        .catch(e => {
-          this.$emit('showMessage', e.response.data, 'error');
-        })
+      this.$request({
+        url: `/microlib/book/${this.deleteBookObj.id}`,
+        method: 'delete'
+      })
+      .then(() => {
+        this.deleteDialogControl = false
+        this.$emit('putMessage', '書籍を削除しました。', 'success');
+        this.getBookList();
+      })
+      .catch(e => {
+        this.$emit('putMessage', e.response.data, 'error');
+      })
     }
   }
 };

@@ -12,7 +12,7 @@
           <div>出版日: {{book.publicationDate}}</div>
           <div>価格: {{book.price | formatPrice}}</div>
           <div>ISBN: {{book.isbn}}</div>
-          <div>ページ数: {{book.pageCount}} ページ</div>
+          <div>ページ数: {{book.pageCount | formatPageCount}}</div>
         </v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
@@ -45,12 +45,11 @@ export default {
     },
     // 削除ボタンを押下する
     deleteSelf() {
-      // this.$emit('dialog');
       this.$emit('deleteBook', this.book);
     },
     // 画像URLを取得
     getImgPath(id) {
-      return `http://localhost:8081/microlib/book/cover/${id}`
+      return this.$request.adornUrl(`/microlib/book/cover/${id}?t=${new Date().getTime()}`)
     }
   }
 };
