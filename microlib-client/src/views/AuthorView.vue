@@ -2,23 +2,21 @@
   <v-item-group multiple>
     <v-container>
       <v-row>
-        <v-col class="lib-breadcrumb" md="8">
+        <v-col cols="12" md="4" class="lib-breadcrumb" align-self="center" >
           <v-breadcrumbs :items="breadcrumbItems" divider=">"></v-breadcrumbs>
         </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="10">
-          <v-row align="center">
-            <v-col cols="4">
+        <v-col cols="12" md="6"  align-self="center" class="microlib-search-area">
+          <v-row align="center" justify="end">
+            <v-col cols="12" md="6">
               <v-text-field
                 v-model="searchParams.authorName"
                 label="著者名で検索"
               ></v-text-field>
             </v-col>
-            <v-col cols="2" fill-height>
-              <v-btn class="ma-2" outlined color="teal" @click="getList()">検索</v-btn>
-            </v-col>
           </v-row>
+        </v-col>
+        <v-col cols="12" md="2"  align-self="center" >
+          <v-btn class="ma-2" outlined color="teal" @click="getList()">検索</v-btn>
         </v-col>
       </v-row>
 
@@ -149,3 +147,9 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.microlib-search-area {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+</style>
