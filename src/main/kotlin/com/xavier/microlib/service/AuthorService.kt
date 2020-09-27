@@ -1,12 +1,14 @@
 package com.xavier.microlib.service
 
 import com.xavier.microlib.domain.Author
-import com.xavier.microlib.domain.dto.AuthorDto
-import com.xavier.microlib.domain.option.AuthorSaveAndUpdateRequest
+import com.xavier.microlib.exception.NotFoundException
+import com.xavier.microlib.http.response.AuthorResponse
+import com.xavier.microlib.http.request.AuthorRequest
 import com.xavier.microlib.repository.AuthorRepository
 import com.xavier.microlib.utils.DtoUtils
 import io.micronaut.data.model.Page
 import io.micronaut.data.model.Pageable
+import java.lang.RuntimeException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -24,21 +26,25 @@ class AuthorService {
     /**
      * 一頁の著者データを返却する
      */
-    fun findPage(authorName: String?, pageable: Pageable): Page<AuthorDto> {
+    fun findPage(authorName: String?, pageable: Pageable): Page<AuthorResponse> {
         return authorRepository.findPage(authorName, pageable)
     }
 
     /**
      * 単特の著者を検索する
      */
-    fun findById(id: Int): AuthorDto = authorRepository.findOne(id)
+    fun findById(id: Int): AuthorResponse {
+        authorRepository.findOne(id)?.let {
+            return it
+        } ?: throw NotFoundException("著者が検索できません。")
+    }
 
     /**
      * 著者を保存する
      */
-    fun save(authorSaveAndUpdateRequest: AuthorSaveAndUpdateRequest): AuthorDto {
-        val author = Author(null, authorSaveAndUpdateRequest.authorName, authorSaveAndUpdateRequest.authorNameKana,
-                authorSaveAndUpdateRequest.birthday, authorSaveAndUpdateRequest.description,
+    fun save(authorRequest: AuthorRequest): AuthorResponse {
+        val author = Author(null, authorRequest.authorName, authorRequest.authorNameKana,
+                authorRequest.birthday, authorRequest.description,
                 true, 1, null, 1, null)
         authorRepository.save(author)
         return DtoUtils.convertAuthorDto(author)
@@ -47,12 +53,12 @@ class AuthorService {
     /**
      * 著者を更新する
      */
-    fun update(authorSaveAndUpdateRequest: AuthorSaveAndUpdateRequest): AuthorDto {
-        val author = authorRepository.findById(authorSaveAndUpdateRequest.id!!).get()
-        author.authorName = authorSaveAndUpdateRequest.authorName
-        author.authorNameKana = authorSaveAndUpdateRequest.authorNameKana
-        author.birthday = authorSaveAndUpdateRequest.birthday
-        author.description = authorSaveAndUpdateRequest.description
+    fun update(authorRequest: AuthorRequest): AuthorResponse {
+        val author = authorRepository.findById(authorRequest.id!!).get()
+        author.authorName = authorRequest.authorName
+        author.authorNameKana = authorRequest.authorNameKana
+        author.birthday = authorRequest.birthday
+        author.description = authorRequest.description
         authorRepository.update(author)
         return DtoUtils.convertAuthorDto(author)
     }

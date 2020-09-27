@@ -39,6 +39,9 @@ data class Book (
         /** 出版日 */
         var publicationDate: LocalDate?,
 
+        /** 表紙有無フラグ */
+        var haveCover: Boolean,
+
         /** 表紙格納パス */
         var coverImgUrl: String?,
 

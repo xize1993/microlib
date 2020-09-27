@@ -4,6 +4,10 @@ micronaut:
     name: microlib
   server:
     context-path: microlib
+    port: 8081
+    # オリジン間リソース共有を許可
+    cors:
+      enabled: true
 
 # DB接続の設定
 datasources:
@@ -27,3 +31,9 @@ jpa:
           auto: update
         show_sql: true
         format_sql: true
+
+# 表紙画像ディレクトリ
+microlib:
+  book:
+    cover:
+      directory: /dev-temp/microlib/image

@@ -1,7 +1,7 @@
 package com.xavier.microlib.repository
 
 import com.xavier.microlib.domain.Author
-import com.xavier.microlib.domain.dto.AuthorDto
+import com.xavier.microlib.http.response.AuthorResponse
 import io.micronaut.data.annotation.Query
 import io.micronaut.data.annotation.Repository
 import io.micronaut.data.model.Page
@@ -26,15 +26,17 @@ interface AuthorRepository : PageableRepository<Author, Int> {
             FROM com.xavier.microlib.domain.Author AS a
             WHERE 
                 (:authorName IS NULL OR a.authorName Like CONCAT('%', :authorName, '%'))
+                AND a.flag = 1
     """, countQuery = """
             SELECT 
                 count(*)
             FROM com.xavier.microlib.domain.Author AS a
             WHERE 
                 (:authorName IS NULL OR a.authorName Like CONCAT('%', :authorName, '%'))
+                AND a.flag = 1
     """)
-    fun findPage(authorName: String?, pageable: Pageable): Page<AuthorDto>
+    fun findPage(authorName: String?, pageable: Pageable): Page<AuthorResponse>
 
-    fun findOne(id: Int): AuthorDto
+    fun findOne(id: Int): AuthorResponse?
 
 }

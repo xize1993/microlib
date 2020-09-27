@@ -35,17 +35,17 @@
 </template>
 
 <script>
-import AuthorCard from "../components/AuthorCard";
+import AuthorCard from '../components/AuthorCard';
 
 export default {
   data: () => ({
     breadcrumbItems: [
       {
-        text: "Microlib 書籍管理システム",
+        text: 'Microlib 書籍管理システム',
         disabled: true,
       },
       {
-        text: "著者管理",
+        text: '著者管理',
         disabled: true,
       }
     ],

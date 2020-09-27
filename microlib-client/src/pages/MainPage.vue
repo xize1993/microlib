@@ -42,7 +42,7 @@
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>
-                 <router-link :to="{ name: item.routerName}">{{ item.text }}</router-link>
+                <router-link :to="{ name: item.routerName}">{{ item.text }}</router-link>
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -50,61 +50,109 @@
       </v-list>
     </v-navigation-drawer>
 
-    <AppBar v-on:drawer="changeDrawer"></AppBar>
+    <!-- APPバー -->
+    <AppBar @drawer="switchDrawer"></AppBar>
 
+    <!-- メインレイアウト -->
     <v-main>
-      <router-view></router-view>
+      <keep-alive>
+        <router-view 
+          ref="currentView"
+          @openDialog="openDialog"
+          @showMessage="showMessage"
+        ></router-view>
+      </keep-alive>
     </v-main>
 
-    <v-btn bottom color="pink" dark fab fixed right @click="openDialog()">
+    <!-- フローティングボタン -->
+    <v-btn bottom color="blue" fab fixed right @click="openDialog()">
       <v-icon>mdi-plus</v-icon>
     </v-btn>
 
+    <!-- ダイアログ -->
     <v-dialog v-model="dialog" width="800px">
-      <component :is="currentForm"></component>
+        <keep-alive>
+          <component
+            :is="currentForm"
+            :dialogFormObj="dialogFormObj"
+            @closeDialog="closeDialog"
+            @showMessage="showMessage"
+            @refreshViewList="refreshCurrentViewList"
+          ></component>
+        </keep-alive>
     </v-dialog>
 
+    <!-- 画面マクス -->
+    <v-overlay v-model="apiLoading">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
+
+    <!-- メッセージ -->
+    <v-snackbar
+      v-model="showMessagebar"
+      :timeout="3000"
+      :top="true"
+      :color="messageColor"
+    >{{message}}</v-snackbar>
   </v-app>
 </template>
 
 <script>
-import AppBar from "../components/AppBar";
-import BookForm from "../components/BookForm";
-import AuthorForm from "../components/AuthorForm";
+import AppBar from '../components/AppBar';
+import BookForm from '../components/BookForm';
+import AuthorForm from '../components/AuthorForm';
 
 export default {
-  name: "App",
+  name: 'App',
 
   components: {
     AppBar
-  },
-  props: {
-    source: String
   },
   data: () => ({
     dialog: false,
     drawer: true,
     currentForm: BookForm,
     items: [
-      { icon: "mdi-book-open-page-variant", text: "書籍", routerName: "book" },
-      { icon: "mdi-contacts", text: "著者", routerName: "author" },
-    ]
+      { icon: 'mdi-book-open-page-variant', text: '書籍', routerName: 'book' },
+      { icon: 'mdi-contacts', text: '著者', routerName: 'author' }
+    ],
+    apiLoading: false,
+    showMessagebar: false,
+    message: '',
+    messageColor: 'info',
+    dialogFormObj: undefined
   }),
   methods: {
-      changeDrawer: function (drawer) {
-        this.drawer = drawer
-      },
-      openDialog: function() {
-        // ルーターよりフォームページを変更
-        console.log(this.$route.name)
-        if (this.$route.name === "book") {
-          this.currentForm = BookForm
-        } else if (this.$route.name === "author") {
-          this.currentForm = AuthorForm
-        }
-        this.dialog = !this.dialog
+    // 引出し表示変換
+    switchDrawer() {
+      this.drawer = !this.drawer;
+    },
+    // フォームダイアログを開く
+    openDialog(dialogFormObj) {
+      // ルーターよりフォームページを変更
+      if (this.$route.name === 'book') {
+        this.currentForm = BookForm;
+      } else if (this.$route.name === 'author') {
+        this.currentForm = AuthorForm;
       }
-    }
+      this.dialogFormObj = dialogFormObj ? dialogFormObj : undefined
+      this.dialog = !this.dialog;
+    },
+    // フォームダイアログを閉じる
+    closeDialog() {
+      this.dialog = !this.dialog;
+    },
+    // メッセージを表示する
+    showMessage(msg, color) {
+      this.message = msg;
+      if (color) this.messageColor = color;
+      this.showMessagebar = true;
+    },
+    // 現在のビューの一覧を更新する
+    refreshCurrentViewList() {
+      this.$refs.currentView.getBookList();
+    },
+  }
 };
 </script>
 

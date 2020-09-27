@@ -22,8 +22,8 @@ const mainRoutes = {
     redirect: { name: 'book' },
     meta: { title: 'メインウインドウ' },
     children: [
-      { path: '/microlib/book', component: BookView, name: 'book', meta: { title: '書籍管理ウインドウ' } },
-      { path: '/microlib/author', component: AuthorView, name: 'author', meta: { title: '著者管理ウインドウ' } }
+      { path: '/microlib/book', component: BookView, name: 'book', meta: { title: '書籍管理ウインドウ'} },
+      { path: '/microlib/author', component: AuthorView, name: 'author', meta: { title: '著者管理ウインドウ'} }
     ],
   }
 

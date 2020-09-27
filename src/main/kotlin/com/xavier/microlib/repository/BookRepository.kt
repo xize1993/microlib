@@ -1,7 +1,7 @@
 package com.xavier.microlib.repository
 
 import com.xavier.microlib.domain.Book
-import com.xavier.microlib.domain.dto.BookDto
+import com.xavier.microlib.http.response.BookResponse
 import io.micronaut.data.annotation.Query
 import io.micronaut.data.annotation.Repository
 import io.micronaut.data.model.Page
@@ -24,7 +24,7 @@ interface BookRepository : CrudRepository<Book, Int> {
                 b.authorId as authorId, 
                 b.subject as subject, 
                 b.publicationDate as publicationDate,
-                b.coverImgUrl as coverImgUrl, 
+                b.haveCover as haveCover, 
                 b.price as price, 
                 b.description as description, 
                 b.pageCount as pageCount
@@ -32,6 +32,7 @@ interface BookRepository : CrudRepository<Book, Int> {
             WHERE 
                 (:title IS NULL OR b.title Like CONCAT('%', :title, '%'))
                 AND (:authorId IS NULL OR b.authorId = :authorId)
+                AND b.flag = 1
         """, countQuery = """
             SELECT 
                 count(*) 
@@ -39,8 +40,9 @@ interface BookRepository : CrudRepository<Book, Int> {
             WHERE 
                 (:title IS NULL OR b.title Like CONCAT('%', :title, '%'))
                 AND (:authorId IS NULL OR b.authorId = :authorId)
+                AND b.flag = 1
         """)
-    fun findPage(title: String?, authorId: Int?, pageable: Pageable): Page<BookDto>
+    fun findPage(title: String?, authorId: Int?, pageable: Pageable): Page<BookResponse>
 
-    fun findOne(id: Int): BookDto
+    fun findOne(id: Int): BookResponse?
 }

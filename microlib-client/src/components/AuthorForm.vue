@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title class="red darken-2">著者登録</v-card-title>
+  <!-- <v-card>
+    <v-card-title class="red">著者登録</v-card-title> -->
     <v-container>
       <v-row class="mx-2">
         <v-col cols="6">
@@ -41,15 +41,17 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-card-actions>
+    <!-- <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn text @click="dialog = false">Cancel</v-btn>
       <v-btn text color="primary" @click="dialog = false">Save</v-btn>
     </v-card-actions>
-  </v-card>
+  </v-card> -->
 </template>
 
 <script>
 export default {
+  name: "AuthorForm",
+
 };
 </script>
