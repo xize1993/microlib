@@ -6,7 +6,7 @@
         <v-list-item-subtitle>
           <div>カナ: {{author.authorNameKana}}</div>
           <div>出生日: {{author.birthday}}</div>
-          <div>書籍数: </div>
+          <div>書籍数: {{author.books | formatBooksLen}}</div>
           <p>{{author.description}}</p>
         </v-list-item-subtitle>
       </v-list-item-content>

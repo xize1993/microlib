@@ -7,7 +7,7 @@
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-subtitle>
-          <div>著者: {{book.authorId}}</div>
+          <div>著者: {{book.author.authorName}}</div>
           <div>種別: {{book.subject}}</div>
           <div>出版日: {{book.publicationDate}}</div>
           <div>価格: {{book.price | formatPrice}}</div>

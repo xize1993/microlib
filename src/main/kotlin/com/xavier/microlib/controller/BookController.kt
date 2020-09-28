@@ -1,8 +1,10 @@
 package com.xavier.microlib.controller
 
+import com.fasterxml.jackson.annotation.JsonView
+import com.xavier.microlib.domain.Book
 import com.xavier.microlib.http.request.BookRequest
-import com.xavier.microlib.http.response.BookResponse
 import com.xavier.microlib.service.BookService
+import com.xavier.microlib.utils.Views
 import io.micronaut.data.model.Page
 import io.micronaut.data.model.Pageable
 import io.micronaut.http.HttpStatus
@@ -30,10 +32,11 @@ class BookController(val bookService: BookService) {
      * @param s ページサイズ
      */
     @Get(uri = "{?t,a,i,s}")
+    @JsonView(Views.Public::class)
     fun getBooks(@QueryValue t: String? = null,
                  @QueryValue a: Int?,
                  @QueryValue(defaultValue = "0") i: Int?,
-                 @QueryValue(defaultValue = "10") s: Int?): Page<BookResponse> {
+                 @QueryValue(defaultValue = "10") s: Int?): Page<Book> {
         return bookService.findPage(t, a, Pageable.from(i!!, s!!))
     }
 
@@ -42,31 +45,31 @@ class BookController(val bookService: BookService) {
      * @param id 書籍id
      */
     @Get(uri = "/{id}")
-    fun getBook(@PathVariable id: Int): BookResponse {
+    @JsonView(Views.Public::class)
+    fun getBook(@PathVariable id: Int): Book {
         return bookService.findById(id)
     }
 
     /**
      * 書籍を保存する
      * @param bookRequest 書籍作成用のリクエストパラメータ
+     * @param imgFile 書籍表紙画像：bookRequestに移動すると取得できない？TODO
      */
-//    @Status(HttpStatus.CREATED)
-//    @Post(uri = "/", consumes = [MediaType.MULTIPART_FORM_DATA])
-//    fun saveBook(@Valid @Body bookRequest: BookRequest): BookResponse {
-//        return bookService.save(bookRequest)
-//    }
-    @Status(HttpStatus.CREATED)
     @Post(uri = "/", consumes = [MediaType.MULTIPART_FORM_DATA])
-    fun saveBook(@Valid @Body bookRequest: BookRequest, @Body imgFile: CompletedFileUpload?): BookResponse {
+    @Status(HttpStatus.CREATED)
+    @JsonView(Views.Public::class)
+    fun saveBook(@Valid @Body bookRequest: BookRequest, @Body imgFile: CompletedFileUpload?): Book {
         return bookService.save(bookRequest, imgFile)
     }
 
     /**
      * 書籍を更新する
      * @param bookRequest 書籍更新用のリクエストパラメータ
+     * @param imgFile 書籍表紙画像：bookRequestに移動すると取得できない?
      */
     @Patch(uri = "/", consumes = [MediaType.MULTIPART_FORM_DATA])
-    fun updateBook(@Valid @Body bookRequest: BookRequest, @Body imgFile: CompletedFileUpload?): BookResponse {
+    @JsonView(Views.Public::class)
+    fun updateBook(@Valid @Body bookRequest: BookRequest, @Body imgFile: CompletedFileUpload?): Book {
         return bookService.update(bookRequest, imgFile)
     }
 
@@ -74,8 +77,8 @@ class BookController(val bookService: BookService) {
      * 書籍を削除する
      * @param id 書籍id
      */
-    @Status(HttpStatus.NO_CONTENT)
     @Delete(uri = "/{id}")
+    @Status(HttpStatus.NO_CONTENT)
     fun deleteBook(@PathVariable id: Int) {
         bookService.delete(id)
     }

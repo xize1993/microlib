@@ -3,9 +3,8 @@ package com.xavier.microlib.service
 import com.xavier.microlib.domain.Book
 import com.xavier.microlib.exception.NotFoundException
 import com.xavier.microlib.http.request.BookRequest
-import com.xavier.microlib.http.response.BookResponse
+import com.xavier.microlib.repository.AuthorRepository
 import com.xavier.microlib.repository.BookRepository
-import com.xavier.microlib.utils.DtoUtils
 import io.micronaut.context.annotation.Property
 import io.micronaut.data.model.Page
 import io.micronaut.data.model.Pageable
@@ -28,48 +27,53 @@ class BookService {
     @Inject
     lateinit var bookRepository: BookRepository
 
+    @Inject
+    lateinit var authorRepository: AuthorRepository
+
     @field:Property(name = "microlib.book.cover.directory")
     var imgDirectory: String? = null
 
     /**
      * 一頁の書籍データを返却する
      */
-    fun findPage(title: String?, authorId: Int?, pageable: Pageable): Page<BookResponse> {
+    fun findPage(title: String?, authorId: Int?, pageable: Pageable): Page<Book> {
         return bookRepository.findPage(title, authorId, pageable)
     }
 
     /**
      * 単特の書籍を検索する
      */
-    fun findById(id: Int): BookResponse = bookRepository.findOne(id)?.let {
+    fun findById(id: Int): Book = bookRepository.findByIdAndFlagTrue(id)?.let {
         return it
     } ?: throw NotFoundException("書籍が検索できません。")
 
     /**
      * 書籍を保存する
      */
-    fun save(bookRequest: BookRequest, imgFile: CompletedFileUpload?): BookResponse {
+    fun save(bookRequest: BookRequest, imgFile: CompletedFileUpload?): Book {
         // 画像ファイルを保存
         val coverImgUrl = imgFile?.let {
             saveImage(it)
         }
 
-        val book = Book(null, bookRequest.title ?: "", bookRequest.isbn, bookRequest.authorId,
+        val author = authorRepository.findById(bookRequest.authorId).get()
+        val book = Book(null, bookRequest.title ?: "", bookRequest.isbn, author,
                 bookRequest.subject, bookRequest.publicationDate, coverImgUrl?.let { true } ?: false, coverImgUrl,
                 bookRequest.price, bookRequest.description, bookRequest.pageCount,
                 true, 1, null, 1, null)
-        bookRepository.save(book)
-        return DtoUtils.convertBookDto(book)
+        return bookRepository.save(book)
     }
 
     /**
      * 書籍を更新する
      */
-    fun update(bookRequest: BookRequest, imgFile: CompletedFileUpload?): BookResponse {
+    fun update(bookRequest: BookRequest, imgFile: CompletedFileUpload?): Book {
         // 画像ファイルを保存
         val coverImgUrl = imgFile?.let {
             saveImage(it)
         }
+
+        val author = authorRepository.findById(bookRequest.authorId).get()
 
         val book = bookRepository.findById(bookRequest.id!!).get()
         book.title = bookRequest.title
@@ -78,14 +82,13 @@ class BookService {
             book.haveCover = true
         }
         book.isbn = bookRequest.isbn
-        book.authorId = bookRequest.authorId
+        book.author = author
         book.subject = bookRequest.subject
         book.publicationDate = bookRequest.publicationDate
         book.price = bookRequest.price
         book.pageCount = bookRequest.pageCount
         book.description = bookRequest.description
-        bookRepository.update(book)
-        return DtoUtils.convertBookDto(book)
+        return bookRepository.update(book)
     }
 
     /**

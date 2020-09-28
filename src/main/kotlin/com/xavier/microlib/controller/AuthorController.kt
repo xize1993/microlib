@@ -1,8 +1,10 @@
 package com.xavier.microlib.controller
 
-import com.xavier.microlib.http.response.AuthorResponse
+import com.fasterxml.jackson.annotation.JsonView
+import com.xavier.microlib.domain.Author
 import com.xavier.microlib.http.request.AuthorRequest
 import com.xavier.microlib.service.AuthorService
+import com.xavier.microlib.utils.Views
 import io.micronaut.data.model.Page
 import io.micronaut.data.model.Pageable
 import io.micronaut.http.HttpStatus
@@ -26,9 +28,10 @@ class AuthorController(val authorService: AuthorService) {
      * @param s ページサイズ
      */
     @Get(uri = "{?n,i,s}")
+    @JsonView(Views.Public::class)
     fun getAuthors(@QueryValue n: String?,
                  @QueryValue(defaultValue = "0") i: Int?,
-                 @QueryValue(defaultValue = "10") s: Int?): Page<AuthorResponse> {
+                 @QueryValue(defaultValue = "10") s: Int?): Page<Author> {
         return authorService.findPage(n, Pageable.from(i!!, s!!))
     }
 
@@ -37,7 +40,8 @@ class AuthorController(val authorService: AuthorService) {
      * @param id 著者id
      */
     @Get(uri = "/{id}")
-    fun getAuthor(@PathVariable id: Int): AuthorResponse {
+    @JsonView(Views.Public::class)
+    fun getAuthor(@PathVariable id: Int): Author {
         return authorService.findById(id)
     }
 
@@ -45,9 +49,10 @@ class AuthorController(val authorService: AuthorService) {
      * 著者を保存する
      * @param authorRequest 著者作成用のリクエストパラメータ
      */
-    @Status(HttpStatus.CREATED)
     @Post(uri = "/")
-    fun saveAuthor(@Valid @Body authorRequest: AuthorRequest): AuthorResponse {
+    @Status(HttpStatus.CREATED)
+    @JsonView(Views.Public::class)
+    fun saveAuthor(@Valid @Body authorRequest: AuthorRequest): Author {
         return authorService.save(authorRequest)
     }
 
@@ -56,7 +61,8 @@ class AuthorController(val authorService: AuthorService) {
      * @param authorRequest 著者更新用のリクエストパラメータ
      */
     @Patch(uri = "/")
-    fun updateAuthor(@Valid @Body authorRequest: AuthorRequest): AuthorResponse {
+    @JsonView(Views.Public::class)
+    fun updateAuthor(@Valid @Body authorRequest: AuthorRequest): Author {
         return authorService.update(authorRequest)
     }
 
@@ -64,8 +70,8 @@ class AuthorController(val authorService: AuthorService) {
      * 著者を削除する
      * @param id 著者id
      */
-    @Status(HttpStatus.NO_CONTENT)
     @Delete(uri = "/{id}")
+    @Status(HttpStatus.NO_CONTENT)
     fun deleteAuthor(@PathVariable id: Int) {
         authorService.delete(id)
     }

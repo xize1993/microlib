@@ -1,13 +1,12 @@
 package com.xavier.microlib.controller
 
+import com.xavier.microlib.domain.Author
 import com.xavier.microlib.http.request.AuthorRequest
-import com.xavier.microlib.http.response.AuthorResponse
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.http.client.exceptions.HttpClientResponseException
-import io.micronaut.http.client.multipart.MultipartBody
 import io.micronaut.test.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -38,7 +37,7 @@ class AuthorControllerTest {
          */
         val authorSaveRequest = AuthorRequest(null, "テスト著者", "テスト チョシャ",
                 LocalDate.of(1980, 10, 1), "テストユニットより作成")
-        val response = client.toBlocking().exchange(HttpRequest.POST("/author", authorSaveRequest), AuthorResponse::class.java)
+        val response = client.toBlocking().exchange(HttpRequest.POST("/author", authorSaveRequest), Author::class.java)
 
         // レスポンスコード：201
         assertEquals(HttpStatus.CREATED, response.status)
@@ -53,7 +52,7 @@ class AuthorControllerTest {
         /*
             2、著者を取得
          */
-        val response2 = client.toBlocking().exchange("/author/${newAuthorId}", AuthorResponse::class.java)
+        val response2 = client.toBlocking().exchange("/author/${newAuthorId}", Author::class.java)
 
         // レスポンスコード：200
         assertEquals(HttpStatus.OK, response2.status)
@@ -66,7 +65,7 @@ class AuthorControllerTest {
          */
         val authorUpdateRequest = AuthorRequest(newAuthorId, "テスト著者更新", "テスト チョシャ",
                 LocalDate.of(1980, 10, 1), "テストユニットより更新")
-        val response3 = client.toBlocking().exchange(HttpRequest.PATCH("/author", authorUpdateRequest), AuthorResponse::class.java)
+        val response3 = client.toBlocking().exchange(HttpRequest.PATCH("/author", authorUpdateRequest), Author::class.java)
 
         // レスポンスコード：200
         assertEquals(HttpStatus.OK, response3.status)
@@ -86,7 +85,7 @@ class AuthorControllerTest {
             5、再取得テスト
          */
         val response5 = assertThrows<HttpClientResponseException> {
-            client.toBlocking().exchange("/author/${newAuthorId}", AuthorResponse::class.java)
+            client.toBlocking().exchange("/author/${newAuthorId}", Author::class.java)
         }
         // レスポンスコード：404
         assertEquals(HttpStatus.NOT_FOUND, response5.status)
@@ -132,7 +131,7 @@ class AuthorControllerTest {
     @Order(4)
     fun testValidated(authorRequest: AuthorRequest) {
         val httpClientResponseException = assertThrows<HttpClientResponseException> {
-            client.toBlocking().exchange(HttpRequest.POST("/author", authorRequest), AuthorResponse::class.java)
+            client.toBlocking().exchange(HttpRequest.POST("/author", authorRequest), Author::class.java)
         }
         // レスポンスコード：400
         assertEquals(HttpStatus.BAD_REQUEST, httpClientResponseException.status)

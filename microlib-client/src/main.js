@@ -23,6 +23,9 @@ Vue.filter('formatTitle', function (val) {
 Vue.filter('formatPageCount', function (val) {
   return val ? `${val}頁` : ''
 })
+Vue.filter('formatBooksLen', function (val) {
+  return val ? val.length : '0'
+})
 
 new Vue({
   router,

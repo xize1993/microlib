@@ -1,6 +1,6 @@
 package com.xavier.microlib.controller
 
-import com.xavier.microlib.http.response.BookResponse
+import com.xavier.microlib.domain.Book
 import io.micronaut.core.io.ResourceLoader
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
@@ -56,7 +56,7 @@ class BookControllerTest() {
 //                .build()
         val createRequestBody = buildMultipartBodyForCreate()
         val response = client.toBlocking().exchange(HttpRequest.POST("/book", createRequestBody)
-                .contentType(MediaType.MULTIPART_FORM_DATA_TYPE), BookResponse::class.java)
+                .contentType(MediaType.MULTIPART_FORM_DATA_TYPE), Book::class.java)
 
         // レスポンスコード：201
         assertEquals(HttpStatus.CREATED, response.status)
@@ -72,7 +72,7 @@ class BookControllerTest() {
             2、書籍を取得
          */
         val response2 = client.toBlocking()
-                .exchange("/book/${newBookId}", BookResponse::class.java)
+                .exchange("/book/${newBookId}", Book::class.java)
 
         // レスポンスコード：200
         assertEquals(HttpStatus.OK, response2.status)
@@ -85,7 +85,7 @@ class BookControllerTest() {
          */
         val updateRequestBody = buildMultipartBodyForUpdate(newBookId.toString(), "テストユニット更新", "テストユニットより更新")
         val response3 = client.toBlocking().exchange(HttpRequest.PATCH("/book", updateRequestBody)
-                .contentType(MediaType.MULTIPART_FORM_DATA_TYPE), BookResponse::class.java)
+                .contentType(MediaType.MULTIPART_FORM_DATA_TYPE), Book::class.java)
 
         // レスポンスコード：200
         assertEquals(HttpStatus.OK, response3.status)
@@ -106,7 +106,7 @@ class BookControllerTest() {
             5、再取得テスト
          */
         val httpClientResponseException = assertThrows<HttpClientResponseException> {
-            client.toBlocking().exchange("/book/${newBookId}", BookResponse::class.java)
+            client.toBlocking().exchange("/book/${newBookId}", Book::class.java)
         }
         // レスポンスコード：404
         assertEquals(HttpStatus.NOT_FOUND, httpClientResponseException.status)
@@ -167,7 +167,7 @@ class BookControllerTest() {
     fun testValidated(createRequestBody: MultipartBody) {
         val httpClientResponseException = assertThrows<HttpClientResponseException> {
             client.toBlocking().exchange(HttpRequest.POST("/book", createRequestBody)
-                    .contentType(MediaType.MULTIPART_FORM_DATA_TYPE), BookResponse::class.java)
+                    .contentType(MediaType.MULTIPART_FORM_DATA_TYPE), Book::class.java)
         }
         // レスポンスコード：400
         assertEquals(HttpStatus.BAD_REQUEST, httpClientResponseException.status)
