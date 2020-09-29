@@ -21,7 +21,7 @@
       </v-row>
 
       <v-row>
-        <v-col v-for="author in listAuthor" :key="author.id" cols="12" md="2">
+        <v-col v-for="author in listAuthor" :key="author.id" cols="12" md="3">
           <v-item>
             <AuthorCard
               :author="author"
@@ -31,10 +31,15 @@
           </v-item>
         </v-col>
       </v-row>
+
+      <v-alert v-show="!listAuthor" text color="blue-grey">
+        <div>著者が検索できません。</div>
+      </v-alert>
     </v-container>
 
     <div class="text-center">
       <v-pagination
+        v-show="listAuthor"
         v-model="searchParams.pageIndex"
         :length="totalPages"
         :total-visible="10"
@@ -77,7 +82,7 @@ export default {
     ],
     searchParams: {
       pageIndex: 1,
-      pageSize: 9,
+      pageSize: 12,
       authorName: ''
     },
     listAuthor: [],

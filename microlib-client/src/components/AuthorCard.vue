@@ -1,13 +1,13 @@
 <template>
   <v-card class="mx-auto" max-width="360" height="230" outlined>
-    <v-card-title class="subtitle-1">{{author.authorName}}</v-card-title>
+    <v-card-title class="subtitle-1" >{{author.authorName}}</v-card-title>
     <v-list-item>
       <v-list-item-content>
         <v-list-item-subtitle>
           <div>カナ: {{author.authorNameKana}}</div>
           <div>出生日: {{author.birthday}}</div>
           <div>書籍数: {{author.books | formatBooksLen}}</div>
-          <p>{{author.description}}</p>
+          <div class="description">{{author.description}}</div>
         </v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
@@ -50,5 +50,8 @@
   padding: 14px;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+.v-list-item {
+  min-height: 100px;
 }
 </style>

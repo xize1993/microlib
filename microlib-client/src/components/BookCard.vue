@@ -1,6 +1,15 @@
 <template>
   <v-card class="mx-auto" max-width="360" height="240" outlined>
-    <v-card-title class="subtitle-1">{{book.title | formatTitle}}</v-card-title>
+    <v-tooltip bottom>
+      <template v-slot:activator="{ on, attrs }">
+        <v-card-title 
+          class="subtitle-1" 
+          v-bind="attrs"
+          v-on="on">{{book.title | formatTitle}}</v-card-title>
+      </template>
+      <span>{{book.title | formatTitle}}</span>
+    </v-tooltip>
+    <!-- <v-card-title class="subtitle-1">{{book.title | formatTitle}}</v-card-title> -->
     <v-list-item>
       <v-list-item-avatar tile size="80" height="100" color="grey">
         <v-img v-if="book.haveCover" :src="getImgPath(book.id)" aspect-ratio="1.7"></v-img>

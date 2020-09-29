@@ -3,14 +3,14 @@
     <!-- メニュー引出し -->
     <v-navigation-drawer v-model="drawerControl" :clipped="$vuetify.breakpoint.lgAndUp" app>
       <v-list dense>
-        <template v-for="item in menus">
-          <v-list-item :key="item.text" link>
+        <template v-for="item in menus" >
+          <v-list-item :key="item.text" link >
             <v-list-item-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>
-                <router-link :to="{ name: item.routerName}">{{ item.text }}</router-link>
+                <router-link tag="div" :to="{ name: item.routerName}">{{ item.text }}</router-link>
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>

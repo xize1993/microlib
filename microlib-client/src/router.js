@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import MainPage from "./pages/MainPage";
 import BookView from "./views/BookView";
@@ -11,7 +10,7 @@ Vue.use(VueRouter)
 // グローバルルーター設定
 const globalRoutes = [
     { path: '/404', component: NotFoundPage, name: '404', meta: { title: 'Not Found' } },
-    { path: '/login', component: LoginPage, name: 'login', meta: { title: 'ログイン' } }
+    // { path: '/login', component: LoginPage, name: 'login', meta: { title: 'ログイン' } }
 ]
 
 // 業務ルーター設定
@@ -27,10 +26,16 @@ const mainRoutes = {
     ],
   }
 
+// ルートにマッチできない場合、404に遷移
+const globalNotFoundRoutes = {
+  path: '*',
+  redirect: '/404'
+}
+
 // ルーター
 const router = new VueRouter({
     mode: 'hash',
-    routes: globalRoutes.concat(mainRoutes)
+    routes: globalRoutes.concat(mainRoutes, globalNotFoundRoutes)
   })
 
 export default router
