@@ -63,9 +63,9 @@
       <v-card>
         <v-card-title class="headline">この書籍を削除しますか？</v-card-title>
         <v-card-text>
-          タイトル：{{deleteBookObj.title | formatTitle}}
+          <strong>タイトル：</strong>{{deleteBookObj.title | formatTitle}}
           <br />
-          著者：{{deleteBookObj.author.authorName}}
+          <strong>著者：</strong>{{deleteBookObj.author.authorName}}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -149,7 +149,7 @@ export default {
           this.totalPages = response.data.totalPages;
         })
         .catch(e => {
-          this.$emit("putMessage", e, "error");
+          this.$emit("putMessage", this.$request.adornErrorMsg(e), "error");
         });
     },
     // 書籍を詳細ダイアログを開く
@@ -181,7 +181,7 @@ export default {
           this.getList();
         })
         .catch(e => {
-          this.$emit("putMessage", e.response.data, "error");
+          this.$emit("putMessage", this.$request.adornErrorMsg(e), "error");
         });
     }
   }

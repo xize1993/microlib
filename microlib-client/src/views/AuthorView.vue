@@ -146,7 +146,7 @@ export default {
         this.getList();
       })
       .catch(e => {
-        this.$emit('putMessage', e.response.data, 'error');
+        this.$emit('putMessage', this.$request.adornErrorMsg(e), 'error');
       })
     }
   }

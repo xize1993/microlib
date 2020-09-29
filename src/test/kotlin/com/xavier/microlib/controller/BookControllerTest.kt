@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import java.io.File
 import java.net.URLEncoder
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -38,23 +39,22 @@ class BookControllerTest() {
     @Order(1)
     fun testBookCRUD() {
         /*
-            1、書籍を作成 TODO file upload
+            1、書籍を作成
          */
-//        val file = File(resourceLoader.getResource("classpath:image/book-cover.jpg").get().file)
-//        val createRequestBody = MultipartBody
-//                .builder()
-//                .addPart("id", "")
-//                .addPart("title", "テストユニット")
-////                .addPart("imgFile", "book-cover.jpg", MediaType.IMAGE_JPEG_TYPE, file)
-//                .addPart("authorId", "1")
-//                .addPart("isbn", "1234567890123")
-//                .addPart("subject", "テスト")
-//                .addPart("publicationDate", "2020-12-12")
-//                .addPart("price", "1800")
-//                .addPart("pageCount", "200")
-//                .addPart("description", "テストユニットより作成")
-//                .build()
-        val createRequestBody = buildMultipartBodyForCreate()
+        val file = File(resourceLoader.getResource("classpath:image/book-cover.jpg").get().file)
+        val createRequestBody = MultipartBody
+                .builder()
+                .addPart("id", "")
+                .addPart("title", "テストユニット")
+                .addPart("imgFile", "book-cover.jpg", MediaType.IMAGE_JPEG_TYPE, file)
+                .addPart("authorId", "1")
+                .addPart("isbn", "1234567890123")
+                .addPart("subject", "テスト")
+                .addPart("publicationDate", "2020-12-12")
+                .addPart("price", "1800")
+                .addPart("pageCount", "200")
+                .addPart("description", "テストユニットより作成")
+                .build()
         val response = client.toBlocking().exchange(HttpRequest.POST("/book", createRequestBody)
                 .contentType(MediaType.MULTIPART_FORM_DATA_TYPE), Book::class.java)
 

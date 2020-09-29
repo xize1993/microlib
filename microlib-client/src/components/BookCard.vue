@@ -1,15 +1,15 @@
 <template>
   <v-card class="mx-auto" max-width="360" height="240" outlined>
-    <v-tooltip bottom>
+    <v-tooltip bottom :disabled="!book.title || (book.title && book.title.length < 40)">
       <template v-slot:activator="{ on, attrs }">
         <v-card-title 
           class="subtitle-1" 
           v-bind="attrs"
-          v-on="on">{{book.title | formatTitle}}</v-card-title>
+          v-on="on"
+        >{{book.title | formatTitle}}</v-card-title>
       </template>
       <span>{{book.title | formatTitle}}</span>
     </v-tooltip>
-    <!-- <v-card-title class="subtitle-1">{{book.title | formatTitle}}</v-card-title> -->
     <v-list-item>
       <v-list-item-avatar tile size="80" height="100" color="grey">
         <v-img v-if="book.haveCover" :src="getImgPath(book.id)" aspect-ratio="1.7"></v-img>
@@ -28,7 +28,7 @@
 
     <v-card-actions class="c-v-card-actions">
       <v-spacer></v-spacer>
-      <v-btn text color="error" @click="deleteSelf()">
+      <v-btn text color="error" @click="deleteSelf()" :disabled="isPublication()">
         <v-icon small>mdi-delete</v-icon>
         <div>
           <strong class="text--lighten-1">削除</strong>
@@ -48,6 +48,10 @@ export default {
     book: Object
   },
   methods: {
+    // 出版済み判断
+    isPublication() {
+      return this.book.publicationDate && new Date(this.book.publicationDate) <= new Date(new Date().toLocaleDateString())
+    },
     // 詳細ボタンを押下する
     openBookDetails() {
       this.$emit('openBookDetails', this.book);

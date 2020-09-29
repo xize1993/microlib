@@ -8,5 +8,11 @@ const request = axios.create({
 })
 
 request.adornUrl = (requestUrl) => `${BASE_URL+requestUrl}`
+request.adornErrorMsg = function (e) {
+    if (!e.response) {
+        return e
+    }
+    return e.response.data.message
+}
 
 export default request
