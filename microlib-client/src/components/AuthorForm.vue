@@ -79,19 +79,14 @@ export default {
     datePickerMenu: false,
   }),
   computed: {
-    authorForm() {
-      console.log(this.formObj)
-      if (this.formObj) {
-        return this.formObj;
-      } else {
-        return {
-          id: '',
-          authorName: '',
-          authorNameKana: '',
-          birthday: '',
-          description: ''
-        };
-      }
+    authorForm: function() {
+      return {
+        id: this.formObj.id || '',
+        authorName: this.formObj.authorName || '',
+        authorNameKana: this.formObj.authorNameKana || '',
+        birthday: this.formObj.birthday || '',
+        description: this.formObj.description || '',
+      };
     }
   },
   methods: {
@@ -108,7 +103,7 @@ export default {
         this.$request({
           url: '/microlib/author',
           method: 'patch',
-          data: this.formObj
+          data: this.authorForm
         })
         .then(() => {
           // 成功の場合ダイアログをクローズ
@@ -124,7 +119,7 @@ export default {
         this.$request({
           url: '/microlib/author',
           method: 'post',
-          data: this.formObj
+          data: this.authorForm
         })
         .then(() => {
           this.$emit('closeDialog');

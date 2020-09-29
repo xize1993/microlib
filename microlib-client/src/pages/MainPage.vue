@@ -38,7 +38,7 @@
     </v-btn>
 
     <!-- ダイアログ -->
-    <v-dialog v-model="dialogControl" width="800px">
+    <v-dialog v-model="dialogControl" width="800px" v-if="dialogControl">
         <keep-alive>
           <component
             :is="currentForm"
@@ -88,8 +88,13 @@ export default {
     message: '',
     messageColor: 'info',
     dialogControl: false,
-    formObj: undefined
+    formObj: {},
   }),
+  computed: {
+    dialogCompentKey: function () {
+      return new Date().getTime()
+    }
+  },
   methods: {
     // 引出し表示変換
     switchDrawer() {
@@ -97,18 +102,18 @@ export default {
     },
     // フォームダイアログを開く
     openDialog(formObj) {
-      console.log(formObj)
       // ルーターよりフォームページを変更
       if (this.$route.name === 'book') {
         this.currentForm = BookForm;
       } else if (this.$route.name === 'author') {
         this.currentForm = AuthorForm;
       }
-      this.formObj = formObj ? formObj : {}
+      this.formObj = formObj || {}
       this.dialogControl = true;
     },
     // フォームダイアログを閉じる
     closeDialog() {
+      this.formObj = {}
       this.dialogControl = false;
     },
     // メッセージを表示する

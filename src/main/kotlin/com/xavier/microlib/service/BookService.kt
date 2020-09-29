@@ -76,18 +76,18 @@ class BookService {
         val author = authorRepository.findById(bookRequest.authorId).get()
 
         val book = bookRepository.findById(bookRequest.id!!).get()
-        book.title = bookRequest.title
+        bookRequest.title?.let { book.title = bookRequest.title }
         coverImgUrl?.let {
             book.coverImgUrl = it
             book.haveCover = true
         }
-        book.isbn = bookRequest.isbn
+        bookRequest.isbn?.let { book.isbn = it }
         book.author = author
-        book.subject = bookRequest.subject
-        book.publicationDate = bookRequest.publicationDate
-        book.price = bookRequest.price
-        book.pageCount = bookRequest.pageCount
-        book.description = bookRequest.description
+        bookRequest.subject?.let { book.subject = it }
+        bookRequest.publicationDate?.let { book.publicationDate = it }
+        bookRequest.price?.let { book.price = it }
+        bookRequest.pageCount?.let { book.pageCount = it }
+        bookRequest.description?.let { book.description = it }
         return bookRepository.update(book)
     }
 

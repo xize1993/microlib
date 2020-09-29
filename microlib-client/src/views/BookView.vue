@@ -59,8 +59,8 @@
       <v-card>
         <v-card-title class="headline">この書籍を削除しますか？</v-card-title>
         <v-card-text>
-          タイトル：{{deleteBookObj.title}}
-          <br />著者：{{deleteBookObj.authorName}}
+          タイトル：{{deleteBookObj.title | formatTitle}}
+          <br />著者：{{deleteBookObj.author.authorName}}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -100,7 +100,9 @@ export default {
     listBook: [],
     totalPages: 0,
     deleteDialogControl: false,
-    deleteBookObj: {}
+    deleteBookObj: {
+      author: {}
+    }
   }),
   components: {
     BookCard
