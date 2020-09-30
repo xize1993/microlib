@@ -11,14 +11,18 @@ kotlin、micronaut、vueに基づいているの練習プロジェクト。
 - vuetify
 
 # 実行
-- ダウンロード
+- ダウンロード（git pullあるいはZIPファイルをダウンロード）
 ```bash
 git pull git@github.com:xize1993/microlib.git
 
+```
+
+- プロジェクトフォルダーに移動
+```
 cd microlib/
 ```
 
-- Docker Compose環境で実行
+- Docker Composeを実行
 ```bash
 docker-compose up
 ```
