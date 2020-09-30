@@ -2,6 +2,7 @@ version: '3'
 services:
   microlib-server:
     image: openjdk:11-jdk-slim
+    container_name: microlib-server
     ports:
       - "8081:8081"
     volumes:
@@ -27,10 +28,11 @@ services:
     restart: always
 
   microlib-client:
-    image: node:12
+    build:
+      context: .
+      dockerfile: Dockerfile-Client
+    container_name: microlib-client
     ports:
       - "8080:8080"
-    volumes:
-      - ./microlib-client:/app
-    working_dir: /app
-    command: yarn serve
+#    volumes:
+#      - ./microlib-client:/app

@@ -1,0 +1,10 @@
+FROM node:12
+
+RUN npm install -g @vue/cli @vue/cli-service-global
+
+WORKDIR /app
+COPY microlib-client .
+RUN yarn install
+
+EXPOSE 8080
+CMD ["yarn", "serve"]

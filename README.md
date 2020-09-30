@@ -1,25 +1,33 @@
 # 紹介
-kotlin、micronaut、vueに基づいているの練習プロジェクト。
+kotlin、micronaut、vueに基づいているの練習プロジェクト。  
+簡単なCRUD、画像アップロード、バリュエーション機能などを実装する。
 
-## バックエンド技術
+## バックエンド
 - kotlin
 - micronaut
 
-## フロンドエンド技術
+## フロンドエンド
 - vue
 - vuetify
 
 # 実行
 - ダウンロード
 ```bash
-git pull
+git pull git@github.com:xize1993/microlib.git
+
+cd microlib/
 ```
 
 - Docker Compose環境で実行
 ```bash
 docker-compose up
 ```
-- ブラウザで確認 
+- ブラウザで確認  
+全部のサービスが立ち上がったら、以下URLで確認する。
+```
+http://localhost:8080/#/microlib/book
+```
+
 
 
 
