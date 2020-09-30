@@ -51,7 +51,7 @@ class AuthorService {
      */
     fun update(authorRequest: AuthorRequest): Author {
         val author = authorRepository.findById(authorRequest.id!!).get()
-        authorRequest.authorName?.let { author.authorName = it }
+        author.authorName = authorRequest.authorName
         authorRequest.authorNameKana?.let { author.authorNameKana = it }
         authorRequest.birthday?.let { author.birthday = it }
         authorRequest.description?.let { author.description = it }

@@ -1,6 +1,8 @@
 package com.xavier.microlib.controller
 
+import com.xavier.microlib.domain.Author
 import com.xavier.microlib.domain.Book
+import com.xavier.microlib.http.request.AuthorRequest
 import io.micronaut.core.io.ResourceLoader
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
@@ -10,10 +12,8 @@ import io.micronaut.http.client.annotation.Client
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.http.client.multipart.MultipartBody
 import io.micronaut.test.annotation.MicronautTest
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Order
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import java.io.File
@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @MicronautTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 class BookControllerTest() {
 
     @Inject
@@ -39,6 +40,23 @@ class BookControllerTest() {
     @Order(1)
     fun testBookCRUD() {
         /*
+            0、著者を作成(依頼条件)
+         */
+        val authorSaveRequest = AuthorRequest(null, "テスト著者", "テスト チョシャ",
+                LocalDate.of(1980, 10, 1), "テストユニットより作成")
+        val response0 = client.toBlocking().exchange(HttpRequest.POST("/author", authorSaveRequest), Author::class.java)
+
+        // レスポンスコード：201
+        assertEquals(HttpStatus.CREATED, response0.status)
+
+        // レスポンスバーディー：AuthorDto
+        assertNotNull(response0.body.get().id)
+        assertEquals("テスト著者", response0.body.get().authorName)
+
+        // 発行されたauthorIdを記録
+        val newAuthorId = response0.body.get().id
+
+        /*
             1、書籍を作成
          */
         val file = File(resourceLoader.getResource("classpath:image/book-cover.jpg").get().file)
@@ -47,7 +65,7 @@ class BookControllerTest() {
                 .addPart("id", "")
                 .addPart("title", "テストユニット")
                 .addPart("imgFile", "book-cover.jpg", MediaType.IMAGE_JPEG_TYPE, file)
-                .addPart("authorId", "1")
+                .addPart("authorId", newAuthorId.toString())
                 .addPart("isbn", "1234567890123")
                 .addPart("subject", "テスト")
                 .addPart("publicationDate", "2020-12-12")
@@ -83,7 +101,7 @@ class BookControllerTest() {
         /*
             3、書籍を更新
          */
-        val updateRequestBody = buildMultipartBodyForUpdate(newBookId.toString(), "テストユニット更新", "テストユニットより更新")
+        val updateRequestBody = buildMultipartBodyForUpdate(newBookId.toString(), "テストユニット更新", newAuthorId.toString(),"テストユニットより更新")
         val response3 = client.toBlocking().exchange(HttpRequest.PATCH("/book", updateRequestBody)
                 .contentType(MediaType.MULTIPART_FORM_DATA_TYPE), Book::class.java)
 
@@ -113,7 +131,7 @@ class BookControllerTest() {
     }
 
     /**
-     * 書籍一覧検索:検察パラメータなし
+     * 書籍一覧検索:検索パラメータなし
      */
     @Test
     @Order(2)
@@ -122,9 +140,6 @@ class BookControllerTest() {
 
         // レスポンスコード：200
         assertEquals(HttpStatus.OK, response.status)
-
-        // レスポンスバーディー：List
-        assertTrue(response.body.get().isNotEmpty())
     }
 
     /**
@@ -138,9 +153,6 @@ class BookControllerTest() {
 
         // レスポンスコード：200
         assertEquals(HttpStatus.OK, response.status)
-
-        // レスポンスバーディー：List
-        assertTrue(response.body.get().isNotEmpty())
     }
 
     /**
@@ -153,9 +165,6 @@ class BookControllerTest() {
 
         // レスポンスコード：200
         assertEquals(HttpStatus.OK, response.status)
-
-        // レスポンスバーディー：List
-        assertTrue(response.body.get().isNotEmpty())
     }
 
     /**
@@ -199,8 +208,8 @@ class BookControllerTest() {
             return buildMultipartBodyDefault(null, null, null, null, null, null, null, null, null)
         }
 
-        fun buildMultipartBodyForUpdate(id: String, title: String, description: String): MultipartBody {
-            return buildMultipartBodyDefault(id, title, null, null, null, null, null, null, description)
+        fun buildMultipartBodyForUpdate(id: String, title: String, authorId: String, description: String): MultipartBody {
+            return buildMultipartBodyDefault(id, title, authorId, null, null, null, null, null, description)
         }
 
         private fun buildMultipartBodyForValidTitle(title: String): MultipartBody {

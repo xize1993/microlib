@@ -8,11 +8,8 @@ import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.test.annotation.MicronautTest
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Order
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import java.net.URLEncoder
@@ -20,6 +17,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @MicronautTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 class AuthorControllerTest {
 
     @Inject
@@ -43,7 +41,7 @@ class AuthorControllerTest {
         assertEquals(HttpStatus.CREATED, response.status)
 
         // レスポンスバーディー：AuthorDto
-        Assertions.assertNotNull(response.body.get().id)
+        assertNotNull(response.body.get().id)
         assertEquals("テスト著者", response.body.get().authorName)
 
         // 発行されたauthorIdを記録
@@ -97,13 +95,10 @@ class AuthorControllerTest {
     @Test
     @Order(2)
     fun testGetAuthors() {
-        val response = client.toBlocking().exchange("/author?i=0&s=20", List::class.java)
+        val response2 = client.toBlocking().exchange("/author?i=0&s=20", List::class.java)
 
         // レスポンスコード：200
-        assertEquals(HttpStatus.OK, response.status)
-
-        // レスポンスバーディー：List
-        Assertions.assertTrue(response.body.get().isNotEmpty())
+        assertEquals(HttpStatus.OK, response2.status)
     }
 
     /**
@@ -112,16 +107,26 @@ class AuthorControllerTest {
     @Test
     @Order(3)
     fun testGetAuthorsByName() {
+        /*
+           1、著者を作成
+        */
+        val authorSaveRequest = AuthorRequest(null, "テスト著者", "テスト チョシャ",
+                LocalDate.of(1980, 10, 1), "テストユニットより作成")
+        val response = client.toBlocking().exchange(HttpRequest.POST("/author", authorSaveRequest), Author::class.java)
+
+        // レスポンスコード：201
+        assertEquals(HttpStatus.CREATED, response.status)
+
+        // レスポンスバーディー：AuthorDto
+        assertNotNull(response.body.get().id)
+        assertEquals("テスト著者", response.body.get().authorName)
+
         val p = URLEncoder.encode("テスト著者", "utf-8")
-        val response = client.toBlocking().exchange("/author?n=${p}i=0&s=20", List::class.java)
+        val response2 = client.toBlocking().exchange("/author?n=${p}&i=0&s=20", List::class.java)
 
         // レスポンスコード：200
-        assertEquals(HttpStatus.OK, response.status)
-
-        // レスポンスバーディー：List
-        Assertions.assertTrue(response.body.get().isNotEmpty())
+        assertEquals(HttpStatus.OK, response2.status)
     }
-
 
     /**
      * 入力チェック

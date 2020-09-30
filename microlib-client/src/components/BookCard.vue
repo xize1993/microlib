@@ -27,6 +27,9 @@
     </v-list-item>
 
     <v-card-actions class="c-v-card-actions">
+      <div v-if="isPublication()">
+          <strong class="isPublication">(出版済)</strong>
+      </div>
       <v-spacer></v-spacer>
       <v-btn text color="error" @click="deleteSelf()" :disabled="isPublication()">
         <v-icon small>mdi-delete</v-icon>
@@ -50,7 +53,7 @@ export default {
   methods: {
     // 出版済み判断
     isPublication() {
-      return this.book.publicationDate && new Date(this.book.publicationDate) <= new Date(new Date().toLocaleDateString())
+      return this.book.publicationDate && new Date(`${this.book.publicationDate} 00:00:00`) <= new Date(new Date().toLocaleDateString())
     },
     // 詳細ボタンを押下する
     openBookDetails() {
@@ -77,5 +80,8 @@ export default {
 }
 .c-v-card-actions {
   padding-top: 0px;
+}
+.isPublication {
+  color: #EF5350;
 }
 </style>

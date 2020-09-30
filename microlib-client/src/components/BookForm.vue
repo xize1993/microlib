@@ -211,7 +211,7 @@ export default {
       if (!this.bookForm.id) {
         return '登録'
       } else {
-        if (this.bookForm.publicationDate && new Date(this.bookForm.publicationDate) <= new Date(new Date().toLocaleDateString())) {
+        if (this.bookForm.publicationDate && new Date(`${this.bookForm.publicationDate} 00:00:00`) <= new Date(new Date().toLocaleDateString())) {
           return '詳細'
         } else {
           return '更新'
@@ -223,7 +223,7 @@ export default {
       if (!this.bookForm.id) {
         return 'blue'
       } else {
-        if (this.bookForm.publicationDate && new Date(this.bookForm.publicationDate) <= new Date(new Date().toLocaleDateString())) {
+        if (this.bookForm.publicationDate && new Date(`${this.bookForm.publicationDate} 00:00:00`) <= new Date(new Date().toLocaleDateString())) {
           return 'yellow'
         } else {
           return 'green'

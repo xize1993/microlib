@@ -12,11 +12,12 @@ micronaut:
 # DB接続の設定
 datasources:
   default:
-    url: jdbc:mysql://localhost:3306/microlib?characterEncoding=utf8&useSSL=true&serverTimezone=JST
-#    url: jdbc:mysql://mysql:3306/mtmtodo?characterEncoding=utf8&useSSL=true&serverTimezone=JST
-    username: dev1
-    password: microlib123
-    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:h2:mem:microlib-test
+    driverClassName: org.h2.Driver
+    username: microlib
+    password: microlib
+    schema-generate: CREATE_DROP
+    dialect: H2
 
 # JPAの設定
 jpa:

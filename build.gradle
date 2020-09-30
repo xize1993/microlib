@@ -52,6 +52,8 @@ dependencies {
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
     runtimeOnly("mysql:mysql-connector-java")
 
+    // テスト実行用
+    testImplementation("com.h2database:h2")
 }
 
 test.classpath += configurations.developmentOnly
