@@ -67,6 +67,7 @@ data class Book (
 
         /** 内容紹介 */
         @JsonView(Views.Public::class)
+        @Column(length=2500)
         var description: String?,
 
         /** ページ数 */

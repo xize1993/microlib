@@ -42,6 +42,7 @@ data class Author (
 
         /** 紹介 */
         @JsonView(Views.Public::class)
+        @Column(length=2500)
         var description: String?,
 
         /** 論理フラグ */

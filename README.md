@@ -28,6 +28,7 @@ docker-compose up
 http://localhost:8080/#/microlib/book
 ```
 
+キャプチャ
 
 
 
