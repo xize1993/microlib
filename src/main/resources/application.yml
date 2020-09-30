@@ -17,8 +17,8 @@ datasources:
     username: dev1
     password: microlib123
     driverClassName: com.mysql.cj.jdbc.Driver
-    schema-generate: CREATE
-    dialect: MYSQL
+#    schema-generate: CREATE
+#    dialect: MYSQL
 
 # JPAの設定
 jpa:
@@ -30,7 +30,7 @@ jpa:
         bytecode:
           provider: none
         hbm2ddl:
-          auto: create
+          auto: update
         show_sql: true
         format_sql: true
 
