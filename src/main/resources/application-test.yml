@@ -42,4 +42,4 @@ jackson:
 microlib:
   book:
     cover:
-      directory: /Users/xavier/dev-temp/microlib/image
+      directory: /dev/microlib/image

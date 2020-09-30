@@ -59,12 +59,12 @@ class BookControllerTest() {
         /*
             1、書籍を作成
          */
-        val file = File(resourceLoader.getResource("classpath:image/book-cover.jpg").get().file)
+//        val file = File(resourceLoader.getResource("classpath:image/book-cover.jpg").get().file)
         val createRequestBody = MultipartBody
                 .builder()
                 .addPart("id", "")
                 .addPart("title", "テストユニット")
-                .addPart("imgFile", "book-cover.jpg", MediaType.IMAGE_JPEG_TYPE, file)
+//                .addPart("imgFile", "book-cover.jpg", MediaType.IMAGE_JPEG_TYPE, file)
                 .addPart("authorId", newAuthorId.toString())
                 .addPart("isbn", "1234567890123")
                 .addPart("subject", "テスト")

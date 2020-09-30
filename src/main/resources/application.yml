@@ -12,8 +12,8 @@ micronaut:
 # DB接続の設定
 datasources:
   default:
-    url: jdbc:mysql://localhost:3306/microlib?characterEncoding=utf8&useSSL=true&serverTimezone=JST
-#    url: jdbc:mysql://mysql:3306/mtmtodo?characterEncoding=utf8&useSSL=true&serverTimezone=JST
+#    url: jdbc:mysql://localhost:3306/microlib?characterEncoding=utf8&useSSL=true&serverTimezone=JST
+    url: jdbc:mysql://microlib-mysql:3306/microlib?characterEncoding=utf8&useSSL=true&serverTimezone=JST
     username: dev1
     password: microlib123
     driverClassName: com.mysql.cj.jdbc.Driver
@@ -41,4 +41,4 @@ jackson:
 microlib:
   book:
     cover:
-      directory: /Users/xavier/dev-temp/microlib/image
+      directory: /dev/microlib/image
