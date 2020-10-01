@@ -15,7 +15,7 @@ CREATE TABLE `t_author` (
   `update_time` datetime(6) DEFAULT NULL,
   `update_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `t_author` WRITE;
 
@@ -45,6 +45,4 @@ CREATE TABLE `t_book` (
   `update_user_id` int(11) DEFAULT NULL,
   `author_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `FKjchbplv6o6eqfu9kdwp302a8v` (`author_id`),
-  CONSTRAINT `FKjchbplv6o6eqfu9kdwp302a8v` FOREIGN KEY (`author_id`) REFERENCES `t_author` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

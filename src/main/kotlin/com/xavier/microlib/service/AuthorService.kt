@@ -55,6 +55,7 @@ class AuthorService {
         authorRequest.authorNameKana?.let { author.authorNameKana = it }
         authorRequest.birthday?.let { author.birthday = it }
         authorRequest.description?.let { author.description = it }
+        author.books = ArrayList()
         return authorRepository.update(author)
     }
 

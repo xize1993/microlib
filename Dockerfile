@@ -1,12 +1,11 @@
-FROM gradle:6.6.1-jdk11
+FROM openjdk:11-jdk-slim
 
-COPY --chown=gradle:gradle . /app/code/src
-WORKDIR /app/code/src
-USER gradle
-RUN gradle build
+COPY wait-for-it.sh ./
+RUN chmod +x wait-for-it.sh
+COPY jar/microlib-0.1-all.jar /app/
 
-COPY --from=build /app/code/src/build/libs/*-all.jar /app/microlib.jar
+WORKDIR /app
 
 EXPOSE 8081
 
-CMD ["java", "-Dcom.sun.management.jmxremote", "-Xmx128m", "-jar", "/app/microlib.jar"]
+CMD ["java", "-Dcom.sun.management.jmxremote", "-Xmx128m", "-jar", "microlib-0.1-all.jar"]
