@@ -24,7 +24,9 @@ cd microlib/
 
 - Docker Composeを実行
 ```bash
+docker-compose up
 ```
+
 - ブラウザで確認  
 全部のサービスが立ち上がったら、以下URLで確認する。
 ```
@@ -32,6 +34,6 @@ http://localhost:8080/#/microlib/book
 ```
 
 - 問題点
-    - `docker-compose up`で初回起動後DBに接続できないこともあります、一度`docker-compose`をシャットダウンして、再起動すればい問題ないですか、原因はまた特定中...
+    - `docker-compose up`で初回起動後DBに接続できないこともあります、一度`docker-compose`をシャットダウンして、再起動すれば問題なさそう、原因はまた特定中...
 
 
