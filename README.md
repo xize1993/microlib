@@ -32,6 +32,6 @@ http://localhost:8080/#/microlib/book
 ```
 
 - 問題点
-- `docker-compose up`で初回起動後DBに接続できないこともあります、一度`docker-compose `シャットダウンして、再起動すればい問題ないですか、原因はまだ特定中...
+    - `docker-compose up`で初回起動後DBに接続できないこともあります、一度`docker-compose `シャットダウンして、再起動すればい問題ないですか、原因はまだ特定中...
 
 
