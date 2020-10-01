@@ -18,13 +18,11 @@ services:
     ports:
     - "3306:3306"
     volumes:
-      - ./dbdata/mysql:/var/lib/mysql
-      - ./dbdata/my_cnf:/etc/my.cnf
+      - ./db:/docker-entrypoint-initdb.d
     environment:
-      MYSQL_DATABASE: "microlib"
       MYSQL_ROOT_PASSWORD: "microlib123"
-      MYSQL_USER: "dev1"
-      MYSQL_PASSWORD: "microlib123"
+#      MYSQL_USER: "dev1"
+#      MYSQL_PASSWORD: "microlib123"
     restart: always
 
   microlib-client:

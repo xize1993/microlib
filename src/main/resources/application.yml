@@ -14,7 +14,7 @@ datasources:
   default:
 #    url: jdbc:mysql://localhost:3306/microlib?characterEncoding=utf8&useSSL=true&serverTimezone=JST
     url: jdbc:mysql://microlib-mysql:3306/microlib?characterEncoding=utf8&useSSL=true&serverTimezone=JST
-    username: dev1
+    username: root
     password: microlib123
     driverClassName: com.mysql.cj.jdbc.Driver
 #    schema-generate: CREATE
