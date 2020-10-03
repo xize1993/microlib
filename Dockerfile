@@ -1,7 +1,6 @@
 FROM openjdk:11-jdk-slim
 
-COPY wait-for-it.sh /app/
-COPY jar/microlib-0.1-all.jar /app/
+COPY jar /app/
 WORKDIR /app
 RUN chmod +x wait-for-it.sh
 
