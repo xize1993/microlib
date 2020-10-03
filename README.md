@@ -11,10 +11,9 @@ kotlin、micronaut、vueに基づいているの練習プロジェクト。
 - vuetify
 
 # 実行
-- ダウンロード（git pullあるいはZIPファイルをダウンロード）
+- ダウンロード（git cloneあるいはZIPファイルをダウンロード）
 ```bash
-git pull git@github.com:xize1993/microlib.git
-
+git clone git@github.com:xize1993/microlib.git
 ```
 
 - プロジェクトフォルダーに移動
