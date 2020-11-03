@@ -28,7 +28,7 @@ data class Book (
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @JsonView(Views.Public::class)
-        val id: Int?,
+        var id: Int?,
 
         /** タイトル */
         @JsonView(Views.Public::class)

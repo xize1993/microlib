@@ -25,7 +25,7 @@ data class Author (
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @JsonView(Views.Public::class)
-        val id: Int?,
+        var id: Int?,
 
         /** 著者名 */
         @JsonView(Views.Public::class)
